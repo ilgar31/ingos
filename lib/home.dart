@@ -3,18 +3,24 @@ import 'package:ingos/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
-class Home extends StatefulWidget {
-  const Home({Key, key}): super(key: key);
+void main() => runApp(MaterialApp(home: Home_page()));
 
+
+class Home_page extends StatelessWidget {
   @override
-  _Home createState() => _Home();
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+        home: new Home());
+  }
 }
 
-class _Home extends State {
+class Home extends StatelessWidget {
   final user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+    String uid = user!.uid;
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
@@ -26,14 +32,14 @@ class _Home extends State {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Вы успешно зашли на аккаунт', style: TextStyle(fontSize: 18),),
-              Text('скоро тут появится контент', style: TextStyle(fontSize: 18),),
+              Text(uid, style: TextStyle(fontSize: 18),),
               ElevatedButton(
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
                   Navigator.pushReplacement(
                     context,
                     PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) => MyHomePage(),
+                      pageBuilder: (context, animation1, animation2) => MyApp(),
                       transitionDuration: Duration(milliseconds: 300),
                       transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
                     ),

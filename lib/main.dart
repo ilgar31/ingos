@@ -4,7 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:googleapis/drive/v3.dart';
+import 'package:googleapis_auth/auth_io.dart';
 import 'color_schemes.dart';
+import 'test.dart';
 
 
 void main() async {
@@ -12,11 +15,11 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
   FirebaseAuth.instance
       .authStateChanges()
-      .listen((User? user) {
+      .listen((user) {
     if (user == null) {
-      runApp(const MyApp());
+      runApp(MaterialApp(home: MyApp()));
     } else {
-      runApp(const Home());
+      runApp(MaterialApp(home: Home_page()));
     }
   });
 }
@@ -55,16 +58,13 @@ class _MyHomePageState extends State<MyHomePage> {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
+
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xff165ab7),
-        title: Text("Ингосздрав", style: TextStyle(color: Colors.white, fontFamily: 'Inter', fontWeight: FontWeight.bold)),
-      ),
+    return  Scaffold(
       body: Center(
         child: ElevatedButton(
           onPressed: () {
@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.pushReplacement(
                 context,
                 PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) => Home(),
+                  pageBuilder: (context, animation1, animation2) => Home_page(),
                   transitionDuration: Duration(milliseconds: 300),
                   transitionsBuilder: (_, a, __, c) =>
                       FadeTransition(opacity: a, child: c),
@@ -82,22 +82,29 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             }
           },
-          child: Text("Войти через Google", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.person_outline, color: Color(0xff6750a4),),
+              Text("Войти / Зарегистрироваться", textAlign: TextAlign.center, style: TextStyle(color: Color(
+                  0xff6750a4), fontSize: 16, fontWeight: FontWeight.w600),),
+            ],
+          ),
           style: ElevatedButton.styleFrom(
-            primary: Color(0xff165ab7),
-            padding: EdgeInsets.symmetric(horizontal: 45, vertical: 12),
-            minimumSize: Size(250, 70),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+            minimumSize: Size(MediaQuery.of(context).size.width * 0.75, 50),
+            maximumSize: Size(MediaQuery.of(context).size.width * 0.75, 50),
             elevation: 10,
-            shadowColor: Colors.black,
-
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20), // <-- Radius
+              borderRadius: BorderRadius.circular(50),
+              side: BorderSide(
+                color: Color(0xff79747e),
+                width: 1.0,
+              ),
             ),
           ),
         ),
       ),
-      floatingActionButton:
-      FloatingActionButton(onPressed: () => {}, tooltip: 'Increment'),
     );
   }
 }
