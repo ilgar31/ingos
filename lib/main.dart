@@ -7,21 +7,13 @@ import 'firebase_options.dart';
 import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'color_schemes.dart';
-import 'test.dart';
+import 'redirect.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
-  FirebaseAuth.instance
-      .authStateChanges()
-      .listen((user) {
-    if (user == null) {
-      runApp(MaterialApp(home: MyApp()));
-    } else {
-      runApp(MaterialApp(home: Home_page()));
-    }
-  });
+  runApp(MaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -48,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final GoogleSignIn googleSignIn = new GoogleSignIn();
 
-  Future<UserCredential> signInWithGoogle() async {
+    Future<UserCredential> signInWithGoogle() async {
     await googleSignIn.signOut();
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -62,8 +54,26 @@ class _MyHomePageState extends State<MyHomePage> {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+  void check(context) async {
+    final user = FirebaseAuth.instance.currentUser;
+    Future.delayed(Duration(seconds: 1), () {
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) => Home_page(),
+            transitionDuration: Duration(milliseconds: 300),
+            transitionsBuilder: (_, a, __, c) =>
+                FadeTransition(opacity: a, child: c),
+          ),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    check(context);
     return  Scaffold(
       body: Center(
         child: ElevatedButton(
@@ -74,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.pushReplacement(
                 context,
                 PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) => Home_page(),
+                  pageBuilder: (context, animation1, animation2) => Redirect(),
                   transitionDuration: Duration(milliseconds: 300),
                   transitionsBuilder: (_, a, __, c) =>
                       FadeTransition(opacity: a, child: c),
