@@ -4,8 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:googleapis/drive/v3.dart';
-import 'package:googleapis_auth/auth_io.dart';
 import 'color_schemes.dart';
 import 'redirect.dart';
 
@@ -56,19 +54,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void check(context) async {
     final user = FirebaseAuth.instance.currentUser;
-    Future.delayed(Duration(seconds: 1), () {
-      if (user != null) {
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => Home_page(),
-            transitionDuration: Duration(milliseconds: 300),
-            transitionsBuilder: (_, a, __, c) =>
-                FadeTransition(opacity: a, child: c),
-          ),
-        );
-      }
-    });
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => Home_page(),
+          transitionDuration: Duration(milliseconds: 300),
+          transitionsBuilder: (_, a, __, c) =>
+              FadeTransition(opacity: a, child: c),
+        ),
+      );
+    }
   }
 
   @override
@@ -78,9 +74,8 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            signInWithGoogle();
             final user = FirebaseAuth.instance.currentUser;
-            if (user != null) {
+            signInWithGoogle().whenComplete(() {
               Navigator.pushReplacement(
                 context,
                 PageRouteBuilder(
@@ -90,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       FadeTransition(opacity: a, child: c),
                 ),
               );
-            }
+            });
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

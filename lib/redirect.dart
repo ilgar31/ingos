@@ -28,7 +28,6 @@ class _Redirect extends State {
         }
       }
     });
-    print(';laskd');
     if (flag) {
       String? name = user!.displayName;
       String? email = user!.email;
@@ -66,18 +65,16 @@ class _Redirect extends State {
       );
     }
   }
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   checkUser(context);
-  // }
+
+  @override
+  void initState() {
+    super.initState();
+    checkUser(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Text('lskdj'),
-      ),);
+    return Scaffold(
+    );
   }
 }

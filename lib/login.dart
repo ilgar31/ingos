@@ -17,12 +17,7 @@ class _Login extends State {
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
     String uid = user!.uid;
-    return MaterialApp(
-      home: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Color(0xff165ab7),
-            title: Text("Главная", style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold)),
-          ),
+    return Scaffold(
           body: Center(child:
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -55,6 +50,6 @@ class _Login extends State {
               ),
             ],
           ),)
-      ),);
+    );
   }
 }
