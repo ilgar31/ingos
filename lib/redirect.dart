@@ -29,20 +29,17 @@ class _Redirect extends State {
       }
     });
     if (flag) {
-      String? name = user!.displayName;
-      String? email = user!.email;
-      print(name);
-      print(email);
-      // FirebaseFirestore.instance
-      //     .collection("Users")
-      //     .doc(FirebaseAuth.instance.currentUser!.uid)
-      //     .set({
-      //   "Телефон": FirebaseAuth.instance.currentUser!.phoneNumber,
-      //   "ФИО": "Введите свое ФИО",
-      //   "E-mail": "Введите свой E-mail",
-      //   "День рождения": "Выберите дату рождения",
-      //   "Пол": "Укажите муж/жен"
-      // });
+      String? mail = user!.email;
+      final name = user!.displayName?.split(' ')[0];
+      final surname = user!.displayName?.split(' ')[1];
+      FirebaseFirestore.instance
+          .collection("Users")
+          .doc(uid)
+          .set({
+        "Имя": name,
+        "Фамилия": surname,
+        "mail": mail,
+      });
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -57,7 +54,7 @@ class _Redirect extends State {
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => Login(),
+          pageBuilder: (context, animation1, animation2) => Home_page(),
           transitionDuration: Duration(milliseconds: 300),
           transitionsBuilder: (_, a, __, c) =>
               FadeTransition(opacity: a, child: c),

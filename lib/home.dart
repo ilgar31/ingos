@@ -3,35 +3,34 @@ import 'package:ingos/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
-void main() => runApp(MaterialApp(home: Home_page()));
+class Home_page extends StatefulWidget {
+  const Home_page({Key, key}): super(key: key);
 
-
-class Home_page extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-        home: new Home());
-  }
+  _Home_page createState() => _Home_page();
 }
 
-class Home extends StatelessWidget {
+class _Home_page extends State {
   final user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
     String uid = user!.uid;
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
           appBar: AppBar(
-            backgroundColor: Color(0xff165ab7),
-            title: Text("Главная", style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold)),
+            title: Row(
+              children: [
+                Icon(Icons.menu),
+                Text("Ингосздрав"),
+              ],
+            ),
           ),
           body: Center(child:
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Вы успешно зашли на аккаунт', style: TextStyle(fontSize: 18),),
+              Text('Главная', style: TextStyle(fontSize: 18),),
               Text(uid, style: TextStyle(fontSize: 18),),
               ElevatedButton(
                 onPressed: () async {
@@ -59,6 +58,6 @@ class Home extends StatelessWidget {
               ),
             ],
           ),)
-      ),);
+     );
   }
 }

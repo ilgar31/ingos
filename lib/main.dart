@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  void check(context) async {
+  void check(context) {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       Navigator.pushReplacement(
