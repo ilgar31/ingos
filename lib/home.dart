@@ -20,9 +20,20 @@ class _Home_page extends State {
     return Scaffold(
           appBar: AppBar(
             title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(Icons.menu),
-                Text("Ингосздрав"),
+                Row(
+                  children: [
+                    IconButton(icon: Icon(Icons.menu), onPressed: () { },),
+                    Text("Ингосздрав"),
+                  ],
+                ),
+                Row(
+                  children: [
+                    IconButton(icon: Icon(Icons.notifications), onPressed: () { },),
+                    IconButton(icon: Icon(Icons.person), onPressed: () { },),
+                  ],
+                ),
               ],
             ),
           ),

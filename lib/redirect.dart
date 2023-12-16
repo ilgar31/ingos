@@ -29,18 +29,7 @@ class _Redirect extends State {
       }
     });
     if (flag) {
-      String? mail = user!.email;
-      final name = user!.displayName?.split(' ')[0];
-      final surname = user!.displayName?.split(' ')[1];
-      FirebaseFirestore.instance
-          .collection("Users")
-          .doc(uid)
-          .set({
-        "Имя": name,
-        "Фамилия": surname,
-        "mail": mail,
-      });
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation1, animation2) => Login(),

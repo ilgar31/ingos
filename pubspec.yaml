@@ -41,6 +41,7 @@ dependencies:
   googleapis_auth: ^1.4.1
   cloud_firestore: ^4.13.6
   firebase_core: ^2.24.2
+  flutter_datetime_picker: ^1.5.1
 
 dev_dependencies:
   flutter_test:
