@@ -1,36 +1,89 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home.dart';
 
 DateTime selectedDate = DateTime(2000);
 
-class Login extends StatefulWidget {
-  const Login({Key, key}): super(key: key);
+class Profile extends StatefulWidget {
+  const Profile({Key, key}): super(key: key);
 
   @override
-  _Login createState() => _Login();
+  _Profile createState() => _Profile();
 }
 
-class _Login extends State {
+class _Profile extends State<Profile> {
+  final user = FirebaseAuth.instance.currentUser!;
+  var number_insurance = '';
+  var thirdname = '';
+
+  void getData() {
+    final docRef = FirebaseFirestore.instance.collection(
+        'Users').doc(
+        FirebaseAuth.instance.currentUser?.uid);
+    docRef.get().then(
+            (DocumentSnapshot doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          number_insurance = data["number_insurance"];
+          selectedDate = data["Дата рождения"];
+          thirdname = data["Отчество"];
+        }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    var number_insurance = "";
-    var birthday = "";
-    var name = user!.displayName?.split(' ')[0];
-    var surname = user!.displayName?.split(' ')[1];
-    var thirdname = '';
-
-
+    var name = user.displayName?.split(' ')[0];
+    var surname = user.displayName?.split(' ')[1];
+    getData();
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  IconButton(icon: Icon(Icons.menu), onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) => Home_page(),
+                        transitionDuration: Duration(milliseconds: 300),
+                        transitionsBuilder: (_, a, __, c) =>
+                            FadeTransition(opacity: a, child: c),
+                      ),
+                    );
+                  },),
+                  Text("Ингосздрав"),
+                ],
+              ),
+              Row(
+                children: [
+                  IconButton(icon: Icon(Icons.notifications), onPressed: () { },),
+                  IconButton(icon: Icon(Icons.person), onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) => Profile(),
+                        transitionDuration: Duration(milliseconds: 300),
+                        transitionsBuilder: (_, a, __, c) =>
+                            FadeTransition(opacity: a, child: c),
+                      ),
+                    );
+                  },),
+                ],
+              ),
+            ],
+          ),
+        ),
+        body: Center(child:
+        Column (
           children: [
+            Expanded(
+              child: Column(
+          children: [
+            SizedBox(height: 150,),
             Container(
               width: MediaQuery.of(context).size.width * 0.75,
               height: 50,
@@ -84,10 +137,10 @@ class _Login extends State {
               height: 50,
               child:
               TextFormField(
+                enabled: false,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: "Номер страхования",
-                  hintText: 'ABC-0000000000',
                 ),
                 initialValue: number_insurance,
                 onChanged: (String value) {
@@ -126,15 +179,10 @@ class _Login extends State {
                   ),
                 );
               },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.person_outline, color: Color(0xff6750a4),),
-                  Text("Зарегистрироваться", textAlign: TextAlign.center, style: TextStyle(color: Color(
-                      0xff6750a4), fontSize: 16, fontWeight: FontWeight.w600),),
-                ],
-              ),
+              child: Text("Сохранить", textAlign: TextAlign.center, style: TextStyle(color: Color(
+                  0xff1d192b), fontSize: 16, fontWeight: FontWeight.w600),),
               style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xfff9dedc),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 minimumSize: Size(MediaQuery.of(context).size.width * 0.75, 45),
                 maximumSize: Size(MediaQuery.of(context).size.width * 0.75, 45),
@@ -142,16 +190,40 @@ class _Login extends State {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
                   side: BorderSide(
-                    color: Color(0xff79747e),
+                    color: Color(0xfff9dedc),
                     width: 1.0,
                   ),
                 ),
               ),
             ),
+          ],),),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(
+                  context,
+                );
+              },
+              child: Text("Выйти", textAlign: TextAlign.center, style: TextStyle(color: Color(
+                  0xff1d192b), fontSize: 16, fontWeight: FontWeight.w600),),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xfff9dedc),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                minimumSize: Size(MediaQuery.of(context).size.width * 0.75, 45),
+                maximumSize: Size(MediaQuery.of(context).size.width * 0.75, 45),
+                elevation: 10,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                  side: BorderSide(
+                    color: Color(0xfff9dedc),
+                    width: 1.0,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 40,),
           ],
-        )
-      ),
-    );
+        ),
+    ));
   }
 }
 

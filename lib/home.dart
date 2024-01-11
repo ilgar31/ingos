@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ingos/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'profile.dart';
 
 
 class Home_page extends StatefulWidget {
@@ -24,14 +25,34 @@ class _Home_page extends State {
               children: [
                 Row(
                   children: [
-                    IconButton(icon: Icon(Icons.menu), onPressed: () { },),
+                    IconButton(icon: Icon(Icons.menu), onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) => Home_page(),
+                          transitionDuration: Duration(milliseconds: 300),
+                          transitionsBuilder: (_, a, __, c) =>
+                              FadeTransition(opacity: a, child: c),
+                        ),
+                      );
+                    },),
                     Text("Ингосздрав"),
                   ],
                 ),
                 Row(
                   children: [
                     IconButton(icon: Icon(Icons.notifications), onPressed: () { },),
-                    IconButton(icon: Icon(Icons.person), onPressed: () { },),
+                    IconButton(icon: Icon(Icons.person), onPressed: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) => Profile(),
+                          transitionDuration: Duration(milliseconds: 300),
+                          transitionsBuilder: (_, a, __, c) =>
+                              FadeTransition(opacity: a, child: c),
+                        ),
+                      );
+                    },),
                   ],
                 ),
               ],

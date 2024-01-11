@@ -29,7 +29,7 @@ class _Redirect extends State {
       }
     });
     if (flag) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation1, animation2) => Login(),
