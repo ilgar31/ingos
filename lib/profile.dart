@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home.dart';
+import 'welcome.dart';
 
 DateTime selectedDate = DateTime(2000);
 
@@ -13,9 +14,23 @@ class Profile extends StatefulWidget {
 }
 
 class _Profile extends State<Profile> {
+
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation1, animation2) => MyApp(),
+        transitionDuration: Duration(milliseconds: 300),
+        transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+      ),
+    );
+  }
+
   final user = FirebaseAuth.instance.currentUser!;
-  var number_insurance = '';
-  var thirdname = '';
+  String number_insurance = '';
+  String thirdname = '';
 
   void getData() {
     final docRef = FirebaseFirestore.instance.collection(
@@ -55,7 +70,8 @@ class _Profile extends State<Profile> {
                       ),
                     );
                   },),
-                  Text("Ингосздрав"),
+                  SizedBox(width: 25,),
+                  Text("Личный кабинет"),
                 ],
               ),
               Row(
@@ -85,7 +101,7 @@ class _Profile extends State<Profile> {
           children: [
             SizedBox(height: 150,),
             Container(
-              width: MediaQuery.of(context).size.width * 0.75,
+              width: MediaQuery.of(context).size.width * 0.85,
               height: 50,
               child:
               TextFormField(
@@ -101,7 +117,7 @@ class _Profile extends State<Profile> {
             ),
             SizedBox(height: 25,),
             Container(
-              width: MediaQuery.of(context).size.width * 0.75,
+              width: MediaQuery.of(context).size.width * 0.85,
               height: 50,
               child:
               TextFormField(
@@ -117,7 +133,7 @@ class _Profile extends State<Profile> {
             ),
             SizedBox(height: 25,),
             Container(
-              width: MediaQuery.of(context).size.width * 0.75,
+              width: MediaQuery.of(context).size.width * 0.85,
               height: 50,
               child:
               TextFormField(
@@ -133,7 +149,7 @@ class _Profile extends State<Profile> {
             ),
             SizedBox(height: 25,),
             Container(
-              width: MediaQuery.of(context).size.width * 0.75,
+              width: MediaQuery.of(context).size.width * 0.85,
               height: 50,
               child:
               TextFormField(
@@ -150,7 +166,7 @@ class _Profile extends State<Profile> {
             ),
             SizedBox(height: 25,),
             Container(
-              width: MediaQuery.of(context).size.width * 0.75,
+              width: MediaQuery.of(context).size.width * 0.85,
               child: CustomDateField(),
             ),
             SizedBox(height: 30,),
@@ -184,8 +200,8 @@ class _Profile extends State<Profile> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xfff9dedc),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                minimumSize: Size(MediaQuery.of(context).size.width * 0.75, 45),
-                maximumSize: Size(MediaQuery.of(context).size.width * 0.75, 45),
+                minimumSize: Size(MediaQuery.of(context).size.width * 0.85, 45),
+                maximumSize: Size(MediaQuery.of(context).size.width * 0.85, 45),
                 elevation: 10,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
@@ -199,17 +215,15 @@ class _Profile extends State<Profile> {
           ],),),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(
-                  context,
-                );
+                signOut();
               },
               child: Text("Выйти", textAlign: TextAlign.center, style: TextStyle(color: Color(
                   0xff1d192b), fontSize: 16, fontWeight: FontWeight.w600),),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xfff9dedc),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                minimumSize: Size(MediaQuery.of(context).size.width * 0.75, 45),
-                maximumSize: Size(MediaQuery.of(context).size.width * 0.75, 45),
+                minimumSize: Size(MediaQuery.of(context).size.width * 0.85, 45),
+                maximumSize: Size(MediaQuery.of(context).size.width * 0.85, 45),
                 elevation: 10,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
