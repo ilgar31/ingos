@@ -8,7 +8,7 @@ import 'color_schemes.dart';
 import 'redirect.dart';
 
 
-void main() async {
+void main2() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
   runApp(MaterialApp(home: MyApp()));

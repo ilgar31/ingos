@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home.dart';
+import 'settings.dart';
+import 'data.dart';
 import 'welcome.dart';
 
-DateTime selectedDate = DateTime(2000);
+
+DateTime selectedDate = DateTime(1999);
 
 class Profile extends StatefulWidget {
   const Profile({Key, key}): super(key: key);
@@ -28,52 +31,19 @@ class _Profile extends State<Profile> {
     );
   }
 
-  final user = FirebaseAuth.instance.currentUser!;
-  String number_insurance = '';
-  String thirdname = '';
-
-  void getData() {
-    final docRef = FirebaseFirestore.instance.collection(
-        'Users').doc(
-        FirebaseAuth.instance.currentUser?.uid);
-    docRef.get().then(
-            (DocumentSnapshot doc) {
-          final data = doc.data() as Map<String, dynamic>;
-          number_insurance = data["number_insurance"];
-          selectedDate = data["Дата рождения"];
-          thirdname = data["Отчество"];
-        }
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser!;
+    String thirdname = '';
     var name = user.displayName?.split(' ')[0];
     var surname = user.displayName?.split(' ')[1];
-    getData();
 
     return Scaffold(
         appBar: AppBar(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  IconButton(icon: Icon(Icons.menu), onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation1, animation2) => Home_page(),
-                        transitionDuration: Duration(milliseconds: 300),
-                        transitionsBuilder: (_, a, __, c) =>
-                            FadeTransition(opacity: a, child: c),
-                      ),
-                    );
-                  },),
-                  SizedBox(width: 25,),
-                  Text("Личный кабинет"),
-                ],
-              ),
+              Text("Личный кабинет"),
               Row(
                 children: [
                   IconButton(icon: Icon(Icons.notifications), onPressed: () { },),
@@ -82,7 +52,7 @@ class _Profile extends State<Profile> {
                       context,
                       PageRouteBuilder(
                         pageBuilder: (context, animation1, animation2) => Profile(),
-                        transitionDuration: Duration(milliseconds: 300),
+                        transitionDuration: Duration(milliseconds: 200),
                         transitionsBuilder: (_, a, __, c) =>
                             FadeTransition(opacity: a, child: c),
                       ),
@@ -93,13 +63,92 @@ class _Profile extends State<Profile> {
             ],
           ),
         ),
-        body: Center(child:
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              UserAccountsDrawerHeader(
+                accountName: Text(user!.displayName.toString()),
+                accountEmail: Text(user!.email.toString()),
+                currentAccountPicture: CircleAvatar(
+                  child: Text(user!.displayName.toString()[0], style: TextStyle(color: Color(
+                      0xff092360), fontWeight: FontWeight.w800, fontSize: 32),),
+                  backgroundColor: Colors.white,
+                ),
+              ),
+              ListTile(
+                title: Text('Главная'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) => Home_page(),
+                      transitionDuration: Duration(milliseconds: 200),
+                      transitionsBuilder: (_, a, __, c) =>
+                          FadeTransition(opacity: a, child: c),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('Личный кабинет'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) => Profile(),
+                      transitionDuration: Duration(milliseconds: 200),
+                      transitionsBuilder: (_, a, __, c) =>
+                          FadeTransition(opacity: a, child: c),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('Данные'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) => Data(),
+                      transitionDuration: Duration(milliseconds: 200),
+                      transitionsBuilder: (_, a, __, c) =>
+                          FadeTransition(opacity: a, child: c),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                title: Text('Настройки'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) => SettingsApp(),
+                      transitionDuration: Duration(milliseconds: 200),
+                      transitionsBuilder: (_, a, __, c) =>
+                          FadeTransition(opacity: a, child: c),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('Users').doc(user?.uid).snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+        if (snapshot.hasData && snapshot.data!.exists) {
+        return Center(child:
         Column (
           children: [
             Expanded(
               child: Column(
           children: [
-            SizedBox(height: 150,),
+            SizedBox(height: 110,),
             Container(
               width: MediaQuery.of(context).size.width * 0.85,
               height: 50,
@@ -141,7 +190,8 @@ class _Profile extends State<Profile> {
                   border: OutlineInputBorder(),
                   labelText: "Отчество (при наличии)",
                 ),
-                initialValue: thirdname,
+                initialValue: (snapshot
+                    .data as DocumentSnapshot)['Отчество'],
                 onChanged: (String value) {
                   thirdname = value;
                 },
@@ -158,16 +208,15 @@ class _Profile extends State<Profile> {
                   border: OutlineInputBorder(),
                   labelText: "Номер страхования",
                 ),
-                initialValue: number_insurance,
-                onChanged: (String value) {
-                  number_insurance = value;
-                },
+                initialValue: (snapshot
+                    .data as DocumentSnapshot)['number_insurance'],
               ),
             ),
             SizedBox(height: 25,),
             Container(
               width: MediaQuery.of(context).size.width * 0.85,
-              child: CustomDateField(),
+              child: CustomDateField(date: (snapshot
+                  .data as DocumentSnapshot)['Дата рождения'].toDate()),
             ),
             SizedBox(height: 30,),
             ElevatedButton(
@@ -180,10 +229,13 @@ class _Profile extends State<Profile> {
                     .set({
                   "Имя": name,
                   "Фамилия": surname,
-                  "Отчество": thirdname,
+                  "Отчество": thirdname != '' ? thirdname : (snapshot
+                      .data as DocumentSnapshot)['Отчество'],
                   "mail": mail,
-                  "number_insurance": number_insurance,
-                  "Дата рождения": selectedDate,
+                  "number_insurance": (snapshot
+                      .data as DocumentSnapshot)['number_insurance'],
+                  "Дата рождения": selectedDate != DateTime(1999) ? selectedDate : (snapshot
+                      .data as DocumentSnapshot)['Дата рождения'].toDate(),
                 });
                 Navigator.pushReplacement(
                   context,
@@ -237,28 +289,43 @@ class _Profile extends State<Profile> {
             SizedBox(height: 40,),
           ],
         ),
-    ));
+    );
+    }
+        else {
+        return Center();
+      }
+    }));
   }
 }
 
 
 class CustomDateField extends StatefulWidget {
+
+  DateTime date;
+
+  CustomDateField({super.key, required this.date});
+
   @override
-  _CustomDateFieldState createState() => _CustomDateFieldState();
+  _CustomDateFieldState createState() => _CustomDateFieldState(this.date);
 }
 
 class _CustomDateFieldState extends State<CustomDateField> {
 
-  Future<void> _selectDate(BuildContext context) async {
+  DateTime date;
+
+  _CustomDateFieldState(this.date);
+
+  Future<void> _selectDate(BuildContext context, date) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
+      initialDate: selectedDate != DateTime(1999) ? selectedDate : date,
       firstDate: DateTime(1930),
       lastDate: DateTime(2006),
     );
-    if (picked != null && picked != selectedDate) {
+    if (picked != null) {
       setState(() {
         selectedDate = picked;
+        date = picked;
       });
     }
   }
@@ -267,7 +334,7 @@ class _CustomDateFieldState extends State<CustomDateField> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        _selectDate(context);
+        _selectDate(context, date);
       },
       child: InputDecorator(
         decoration: InputDecoration(
@@ -278,7 +345,7 @@ class _CustomDateFieldState extends State<CustomDateField> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(
-              '${selectedDate.toLocal()}'.split(' ')[0],
+              '${(selectedDate != DateTime(1999) ? selectedDate : date).toLocal()}'.split(' ')[0],
             ),
             Icon(Icons.calendar_today),
           ],

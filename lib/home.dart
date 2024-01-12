@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ingos/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'profile.dart';
+import 'settings.dart';
+import 'data.dart';
 
 
 class Home_page extends StatefulWidget {
@@ -23,23 +25,7 @@ class _Home_page extends State {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    IconButton(icon: Icon(Icons.menu), onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation1, animation2) => Home_page(),
-                          transitionDuration: Duration(milliseconds: 300),
-                          transitionsBuilder: (_, a, __, c) =>
-                              FadeTransition(opacity: a, child: c),
-                        ),
-                      );
-                    },),
-                    SizedBox(width: 25,),
-                    Text("Ингосздрав"),
-                  ],
-                ),
+                Text("Ингосздрав"),
                 Row(
                   children: [
                     IconButton(icon: Icon(Icons.notifications), onPressed: () { },),
@@ -48,7 +34,7 @@ class _Home_page extends State {
                         context,
                         PageRouteBuilder(
                           pageBuilder: (context, animation1, animation2) => Profile(),
-                          transitionDuration: Duration(milliseconds: 300),
+                          transitionDuration: Duration(milliseconds: 200),
                           transitionsBuilder: (_, a, __, c) =>
                               FadeTransition(opacity: a, child: c),
                         ),
@@ -66,7 +52,7 @@ class _Home_page extends State {
               SizedBox(height: 20,),
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0xfffef7ff),
+                  color: Color(0xfffeeeff),
                   borderRadius: BorderRadius.circular(20.0),
                   border: Border.all(
                     color: Color(0xffcac4d0),
@@ -82,7 +68,7 @@ class _Home_page extends State {
                       radius: 22.0,
                       backgroundColor: Color(0xff6750a4),
                       child: Text(
-                        'A',
+                        'Ш',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -95,8 +81,8 @@ class _Home_page extends State {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("Шаги", style: TextStyle(color: Colors.black, fontSize:16, fontWeight: FontWeight.w700)),
-                        SizedBox(height: 7.5),
-                        Text("12345", style: TextStyle(color: Colors.black, fontSize:14, fontWeight: FontWeight.w500)),
+                        SizedBox(height: 5),
+                        Text("12345", style: TextStyle(color: Colors.black, fontSize:15, fontWeight: FontWeight.w500)),
                       ],
                     )
                   ],
@@ -105,7 +91,7 @@ class _Home_page extends State {
               SizedBox(height: 20,),
               Container(
                   decoration: BoxDecoration(
-                    color: Color(0xfffef7ff),
+                    color: Color(0xfffeeeff),
                     borderRadius: BorderRadius.circular(20.0),
                     border: Border.all(
                       color: Color(0xffcac4d0),
@@ -121,7 +107,7 @@ class _Home_page extends State {
                         radius: 22.0,
                         backgroundColor: Color(0xff6750a4),
                         child: Text(
-                          'A',
+                          'П',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -134,8 +120,8 @@ class _Home_page extends State {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("Пульс", style: TextStyle(color: Colors.black, fontSize:16, fontWeight: FontWeight.w700)),
-                          SizedBox(height: 7.5),
-                          Text("80", style: TextStyle(color: Colors.black, fontSize:14, fontWeight: FontWeight.w500)),
+                          SizedBox(height: 5),
+                          Text("80", style: TextStyle(color: Colors.black, fontSize:15, fontWeight: FontWeight.w500)),
                         ],
                       )
                     ],
@@ -144,7 +130,7 @@ class _Home_page extends State {
               SizedBox(height: 20,),
               Container(
                   decoration: BoxDecoration(
-                    color: Color(0xfffef7ff),
+                    color: Color(0xfffeeeff),
                     borderRadius: BorderRadius.circular(20.0),
                     border: Border.all(
                       color: Color(0xffcac4d0),
@@ -160,7 +146,7 @@ class _Home_page extends State {
                         radius: 22.0,
                         backgroundColor: Color(0xff6750a4),
                         child: Text(
-                          'A',
+                          'К',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -173,8 +159,8 @@ class _Home_page extends State {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("Качество сна", style: TextStyle(color: Colors.black, fontSize:16, fontWeight: FontWeight.w700)),
-                          SizedBox(height: 7.5),
-                          Text("60%", style: TextStyle(color: Colors.black, fontSize:14, fontWeight: FontWeight.w500)),
+                          SizedBox(height: 5),
+                          Text("60%", style: TextStyle(color: Colors.black, fontSize:15, fontWeight: FontWeight.w500)),
                         ],
                       )
                     ],
@@ -182,7 +168,82 @@ class _Home_page extends State {
               )
             ],
           )
-          )
+          ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(user!.displayName.toString()),
+              accountEmail: Text(user!.email.toString()),
+              currentAccountPicture: CircleAvatar(
+                child: Text(user!.displayName.toString()[0], style: TextStyle(color: Color(
+                    0xff092360), fontWeight: FontWeight.w800, fontSize: 32),),
+                backgroundColor: Colors.white,
+              ),
+            ),
+            ListTile(
+              title: Text('Главная'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => Home_page(),
+                    transitionDuration: Duration(milliseconds: 200),
+                    transitionsBuilder: (_, a, __, c) =>
+                        FadeTransition(opacity: a, child: c),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Личный кабинет'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => Profile(),
+                    transitionDuration: Duration(milliseconds: 200),
+                    transitionsBuilder: (_, a, __, c) =>
+                        FadeTransition(opacity: a, child: c),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Данные'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => Data(),
+                    transitionDuration: Duration(milliseconds: 200),
+                    transitionsBuilder: (_, a, __, c) =>
+                        FadeTransition(opacity: a, child: c),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Настройки'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => SettingsApp(),
+                    transitionDuration: Duration(milliseconds: 200),
+                    transitionsBuilder: (_, a, __, c) =>
+                        FadeTransition(opacity: a, child: c),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
